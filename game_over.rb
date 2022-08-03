@@ -1,0 +1,2 @@
+class GameOver < StandardError
+end

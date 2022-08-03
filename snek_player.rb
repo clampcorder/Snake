@@ -1,6 +1,7 @@
 require 'set'
 
 require './config'
+require './game_over'
 
 class SnekPlayer
 
@@ -38,7 +39,7 @@ class SnekPlayer
     tail = @visible_cells.last
     x, y = next_cell_position(head.x, head.y, @facing)
     if @occupied_coordinates.include? [x, y]
-      puts "ayy yo wtf"
+      raise GameOver
     end
 
     color = head.color.dup
