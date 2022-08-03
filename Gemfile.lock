@@ -1,0 +1,12 @@
+GEM
+  specs:
+    gosu (1.4.3)
+
+PLATFORMS
+  arm64-darwin-21
+
+DEPENDENCIES
+  gosu
+
+BUNDLED WITH
+   2.3.17
