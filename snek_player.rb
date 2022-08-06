@@ -46,9 +46,10 @@ class SnekPlayer
     @visible_cells = [Cell.new(x, y, color)] + @visible_cells[0..-2]
     @occupied_coordinates.add [x, y]
     @occupied_coordinates.delete [tail.x, tail.y]
+    return [x, y]
   end
 
-  def add_cell
+  def grow
     last_cell = @visible_cells.last
     next_cell = last_cell.dup
     @visible_cells.append next_cell

@@ -1,4 +1,4 @@
 module Config
-  WINDOW_X = 800
-  WINDOW_Y = 600
+  WINDOW_X = 400
+  WINDOW_Y = 300
 end
