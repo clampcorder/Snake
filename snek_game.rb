@@ -12,25 +12,15 @@ class SnekGame < Gosu::Window
     super(Config::WINDOW_X, Config::WINDOW_Y)
     @player = DummyElement.new
     @score_ui = DummyElement.new
-    @overlay_ui = DummyElement.new
-    @fruit_manager = DummyElement.new
-    reset_game
-  end
-
-  def reset_game
-    @play_active = false
-    @player = SnekPlayer.new
-    @fruit_manager = FruitManager.new
-    # 10.times do 
-    #   |n| @player.grow
-    # end
     @overlay_ui = Banner.new('Press space to start')
+    @fruit_manager = DummyElement.new
   end
 
   def start_game
     @play_active = true
+    @player = SnekPlayer.new
+    @fruit_manager = FruitManager.new
     @overlay_ui = DummyElement.new
-
     return
   end
 
