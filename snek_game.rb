@@ -56,12 +56,11 @@ class SnekGame < Gosu::Window
 
   def button_down(id)
     if not @play_active and id == Gosu::KB_SPACE
-      reset_game
       start_game
       return
-    end
-
-    if @player.key_bindings.include? id
+    elsif not @play_active
+      return
+    elsif @player.key_bindings.include? id
       @player.handle_keypress id
     end
   end
