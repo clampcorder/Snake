@@ -14,6 +14,7 @@ class SnekGame < Gosu::Window
     @score_ui = DummyElement.new
     @overlay_ui = Banner.new('Press space to start')
     @fruit_manager = DummyElement.new
+    @sounds = (1..3).map { |num| Gosu::Sample.new("media/beep_#{num}.wav") }.cycle
   end
 
   def start_game
@@ -37,11 +38,19 @@ class SnekGame < Gosu::Window
         head_position = @player.movement_tick
       rescue
         game_over
+        death_knell = @sounds.first.play(Config::SOUND_VOLUME, 2, true)
+        10.times do |x|
+          death_knell.volume = Config::SOUND_VOLUME - (x * 0.05)
+          death_knell.speed = 2 - (x * 0.08)
+          sleep 0.08
+        end
+        death_knell.stop
       end
 
       if head_position == @fruit_manager.fruit_coordinates
         @player.grow
         @fruit_manager.spawn_fruit(@player.occupied_coordinates)
+        @sounds.next.play(Config::SOUND_VOLUME)
       end
 
     end
