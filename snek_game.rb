@@ -29,7 +29,6 @@ class SnekGame < Gosu::Window
 
   def start_game
     @play_active = true
-    @player.facing = :right
     @overlay_ui = DummyElement.new
 
     return
@@ -72,17 +71,8 @@ class SnekGame < Gosu::Window
       return
     end
 
-    case id
-    when Gosu::KB_UP
-      @player.facing = :up
-    when Gosu::KB_DOWN
-      @player.facing = :down
-    when Gosu::KB_LEFT
-      @player.facing = :left
-    when Gosu::KB_RIGHT
-      @player.facing = :right
-    else
-
+    if @player.key_bindings.include? id
+      @player.handle_keypress id
     end
   end
 end

@@ -5,15 +5,38 @@ require './game_over'
 
 class SnekPlayer
 
-  attr_writer :facing
+  attr_reader :key_bindings
 
   def initialize
-    @facing = nil
+    @facing = :right
     @initial_color = Gosu::Color::AQUA.dup
 
     @visible_cells = [Cell.new(Config::WINDOW_X / 2, Config::WINDOW_Y / 2, @initial_color)]
     @occupied_coordinates = Set.new
     @occupied_coordinates.add [@visible_cells[0].x, @visible_cells[0].y]
+    @key_bindings = [
+      Gosu::KB_UP,
+      Gosu::KB_DOWN,
+      Gosu::KB_LEFT,
+      Gosu::KB_RIGHT,
+    ]
+  end
+
+  def handle_keypress(id)
+    # Change the facing riection of the head, do not allow going directly opposite
+    # current direction, or else player instantly dies.
+    case id
+    when Gosu::KB_UP
+      @facing = :up unless @facing == :down
+    when Gosu::KB_DOWN
+      @facing = :down unless @facing == :up
+    when Gosu::KB_LEFT
+      @facing = :left unless @facing == :right
+    when Gosu::KB_RIGHT
+      @facing = :right unless @facing == :left
+    else
+
+    end
   end
 
   def next_cell_position(x, y, facing)
