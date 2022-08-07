@@ -5,13 +5,14 @@ require './config'
 require './dummy'
 require './fruit'
 require './game_over'
+require './scoreboard'
 require './snek_player.rb'
 
 class SnekGame < Gosu::Window
   def initialize
     super(Config::WINDOW_X, Config::WINDOW_Y)
     @player = DummyElement.new
-    @score_ui = DummyElement.new
+    @scoreboard = Scoreboard.new
     @overlay_ui = Banner.new('Press space to start')
     @fruit_manager = DummyElement.new
     @sounds = (1..3).map { |num| Gosu::Sample.new("media/beep_#{num}.wav") }.cycle
@@ -51,6 +52,7 @@ class SnekGame < Gosu::Window
         @player.grow
         @fruit_manager.spawn_fruit(@player.occupied_coordinates)
         @sounds.next.play(Config::SOUND_VOLUME)
+        @scoreboard.increment
       end
 
     end
@@ -59,7 +61,7 @@ class SnekGame < Gosu::Window
   def draw
     @player.draw
     @fruit_manager.draw
-    @score_ui.draw
+    @scoreboard.draw
     @overlay_ui.draw
   end
 
