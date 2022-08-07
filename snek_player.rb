@@ -20,11 +20,14 @@ class SnekPlayer
       Gosu::KB_LEFT,
       Gosu::KB_RIGHT,
     ]
+    @input_locked = false
   end
 
   def handle_keypress(id)
     # Change the facing riection of the head, do not allow going directly opposite
     # current direction, or else player instantly dies.
+    return if @input_locked
+
     case id
     when Gosu::KB_UP
       @facing = :up unless @facing == :down
@@ -37,6 +40,10 @@ class SnekPlayer
     else
 
     end
+    # disallow changing facing till after next tick, this prevents players rapidly
+    # changing facing such that by the next tick they go backwards.
+    @input_locked = true
+
   end
 
   def next_cell_position(x, y, facing)
@@ -69,6 +76,8 @@ class SnekPlayer
     @visible_cells = [Cell.new(x, y, color)] + @visible_cells[0..-2]
     @occupied_coordinates.add [x, y]
     @occupied_coordinates.delete [tail.x, tail.y]
+
+    @input_locked = false
     return [x, y]
   end
 
