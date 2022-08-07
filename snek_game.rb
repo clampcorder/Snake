@@ -41,7 +41,7 @@ class SnekGame < Gosu::Window
 
   def update
     if @play_active
-      10.times { |x| sleep 0.01 }
+      6.times { |x| sleep 0.01 }
 
       begin
         head_position = @player.movement_tick
