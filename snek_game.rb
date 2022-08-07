@@ -51,7 +51,7 @@ class SnekGame < Gosu::Window
 
       if head_position == @fruit_manager.fruit_coordinates
         @player.grow
-        @fruit_manager.spawn_fruit
+        @fruit_manager.spawn_fruit(@player.occupied_coordinates)
       end
 
     end

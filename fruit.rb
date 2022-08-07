@@ -3,13 +3,16 @@ class FruitManager
 
   def initialize
     @image = Gosu::Image.new("media/cell.bmp")
-    spawn_fruit
+    x_values = (0...Config::WINDOW_X / 10).map { |x| x * 10}
+    y_values = (0...Config::WINDOW_Y / 10).map { |x| x * 10}
+    @candidate_coordinates = x_values.product(y_values).to_set
+    spawn_fruit []
   end
 
-  def spawn_fruit
-    x = rand(Config::WINDOW_X / 10) * 10
-    y = rand(Config::WINDOW_Y / 10) * 10
-    @fruit_coordinates = [x, y]
+  def spawn_fruit(occupied_coordinates)
+    possible_coordinates = (@candidate_coordinates - occupied_coordinates.to_set).to_a
+    @fruit_coordinates = *(possible_coordinates.sample)
+
     @color = Gosu::Color.new(
       rand(128..256),
       rand(128..256),

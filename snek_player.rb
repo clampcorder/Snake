@@ -6,6 +6,7 @@ require './game_over'
 class SnekPlayer
 
   attr_reader :key_bindings
+  attr_reader :occupied_coordinates
 
   def initialize
     @facing = :right
