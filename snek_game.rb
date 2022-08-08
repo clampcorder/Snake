@@ -5,6 +5,7 @@ require './config'
 require './dummy'
 require './fruit'
 require './game_over'
+require './objective'
 require './scoreboard'
 require './snek_player.rb'
 require './sounds'
@@ -17,14 +18,15 @@ class SnekGame < Gosu::Window
     @player = DummyElement.new
     @scoreboard = Scoreboard.new
     @overlay_ui = Banner.new('Press space to start')
-    @fruit_manager = DummyElement.new
     @sound_manager = SoundManager.new
+    @objective_manager = DummyElement.new
   end
 
   def start_game
     @game_in_progress = true
     @player = SnekPlayer.new
     @fruit_manager = FruitManager.new
+    @objective_manager = ObjectiveManager.new
     @overlay_ui = DummyElement.new
     @scoreboard.reset
     return
@@ -47,19 +49,22 @@ class SnekGame < Gosu::Window
         @sound_manager.death_knell
       end
 
-      if head_position == @fruit_manager.fruit_coordinates
+      if head_position == @objective_manager.objective_coordinates
         @player.grow
-        @fruit_manager.spawn_fruit(@player.occupied_coordinates)
+        @objective_manager.spawn_objective(@player.occupied_coordinates)
         @sound_manager.happy_beep
         @scoreboard.increment
       end
+
+      @objective_manager.update
 
     end
   end
 
   def draw
     @player.draw
-    @fruit_manager.draw
+    #@fruit_manager.draw
+    @objective_manager.draw
     @scoreboard.draw
     @overlay_ui.draw
   end
