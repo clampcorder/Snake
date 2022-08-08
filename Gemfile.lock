@@ -1,12 +1,15 @@
 GEM
+  remote: https://rubygems.org/
   specs:
     gosu (1.4.3)
+    sqlite3 (1.4.4)
 
 PLATFORMS
   arm64-darwin-21
 
 DEPENDENCIES
   gosu
+  sqlite3
 
 BUNDLED WITH
    2.3.17

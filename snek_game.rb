@@ -23,6 +23,7 @@ class SnekGame < Gosu::Window
     @player = SnekPlayer.new
     @fruit_manager = FruitManager.new
     @overlay_ui = DummyElement.new
+    @scoreboard.reset
     return
   end
 
