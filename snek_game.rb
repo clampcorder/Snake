@@ -11,6 +11,8 @@ require './snek_player.rb'
 class SnekGame < Gosu::Window
   def initialize
     super(Config::WINDOW_X, Config::WINDOW_Y)
+    @game_in_progress = false
+    @paused = false
     @player = DummyElement.new
     @scoreboard = Scoreboard.new
     @overlay_ui = Banner.new('Press space to start')
@@ -19,7 +21,7 @@ class SnekGame < Gosu::Window
   end
 
   def start_game
-    @play_active = true
+    @game_in_progress = true
     @player = SnekPlayer.new
     @fruit_manager = FruitManager.new
     @overlay_ui = DummyElement.new
@@ -28,12 +30,13 @@ class SnekGame < Gosu::Window
   end
 
   def game_over
-    @play_active = false
+    @game_in_progress = false
     @overlay_ui = Banner.new('Game Over', 'Press space to restart')
+    @scoreboard.save
   end
 
   def update
-    if @play_active
+    if @game_in_progress and not @paused
       6.times { |x| sleep 0.01 }
 
       begin
@@ -67,13 +70,15 @@ class SnekGame < Gosu::Window
   end
 
   def button_down(id)
-    if not @play_active and id == Gosu::KB_SPACE
+    if not @game_in_progress and id == Gosu::KB_SPACE
       start_game
       return
-    elsif not @play_active
+    elsif not @game_in_progress
       return
-    elsif @player.key_bindings.include? id
+    elsif not @paused and @player.key_bindings.include? id
       @player.handle_keypress id
+    elsif @game_in_progress and id == Gosu::KB_P
+      @paused = (not @paused)
     end
   end
 end

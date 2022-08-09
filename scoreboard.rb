@@ -23,10 +23,13 @@ class Scoreboard
   end
 
   def reset
+    @score = 0
+  end
+
+  def save
     if @score == @highscore
       @db.execute "INSERT INTO scores VALUES (NULL, ?);", "#{@highscore}"
     end
-    @score = 0
   end
 
   def increment(value=1)
