@@ -3,4 +3,6 @@ module Config
   WINDOW_Y = 300
 
   SOUND_VOLUME = 0.25
+
+  MICE_PROBABILITY = 0.10
 end

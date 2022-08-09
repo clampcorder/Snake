@@ -50,10 +50,12 @@ class SnekGame < Gosu::Window
       end
 
       if head_position == @objective_manager.objective_coordinates
-        @player.grow
+        @objective_manager.reward.times do
+          @player.grow
+          @sound_manager.happy_beep
+          @scoreboard.increment
+        end
         @objective_manager.spawn_objective(@player.occupied_coordinates)
-        @sound_manager.happy_beep
-        @scoreboard.increment
       end
 
       @objective_manager.update
