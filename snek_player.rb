@@ -13,7 +13,7 @@ class SnekPlayer
     @last_calculated_facing = :right
     @initial_color = Gosu::Color::AQUA.dup
 
-    @visible_cells = [Cell.new(Config::WINDOW_X / 2, Config::WINDOW_Y / 2, @initial_color)]
+    @visible_cells = [Cell.new(Config::Window::WIDTH / 2, Config::Window::HEIGHT / 2, @initial_color)]
     @occupied_coordinates = Set.new
     @occupied_coordinates.add [@visible_cells[0].x, @visible_cells[0].y]
     @key_bindings = [
@@ -56,8 +56,8 @@ class SnekPlayer
     else
       
     end
-    x %= Config::WINDOW_X
-    y %= Config::WINDOW_Y
+    x %= Config::Window::WIDTH
+    y %= Config::Window::HEIGHT
     return x, y
   end
 

@@ -46,7 +46,7 @@ class Scoreboard
     )
     @font.draw_text_rel(
       "Highscore: #{@highscore}",
-      Config::WINDOW_X - 5,
+      Config::Window::WIDTH - 5,
       5,
       1,
       1,

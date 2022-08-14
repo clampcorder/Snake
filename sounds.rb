@@ -9,9 +9,9 @@ class SoundManager
   end
 
   def death_knell
-    beep = @sounds.first.play(Config::SOUND_VOLUME, 2, true)
+    beep = @sounds.first.play(Config::Sound::VOLUME, 2, true)
     10.times do |x|
-      beep.volume = Config::SOUND_VOLUME - (x * 0.05)
+      beep.volume = Config::Sound::VOLUME - (x * 0.05)
       beep.speed = 2 - (x * 0.08)
       sleep 0.08
     end
@@ -19,6 +19,6 @@ class SoundManager
   end
 
   def happy_beep
-    @sounds.next.play(Config::SOUND_VOLUME)
+    @sounds.next.play(Config::Sound::VOLUME)
   end
 end

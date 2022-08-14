@@ -9,8 +9,8 @@ class Banner
   end
 
   def draw
-    x = Config::WINDOW_X / 2
-    y = Config::WINDOW_Y / 2
+    x = Config::Window::WIDTH / 2
+    y = Config::Window::HEIGHT / 2
 
     @heading_font.draw_text_rel(
       @heading, 

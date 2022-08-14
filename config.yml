@@ -1,0 +1,6 @@
+window:
+  height: 300
+  width: 400
+
+sound:
+  volume: 0.25

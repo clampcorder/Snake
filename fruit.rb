@@ -3,8 +3,8 @@ class FruitManager
 
   def initialize
     @image = Gosu::Image.new("media/cell.bmp")
-    x_values = (0...Config::WINDOW_X / 10).map { |x| x * 10}
-    y_values = (0...Config::WINDOW_Y / 10).map { |x| x * 10}
+    x_values = (0...Config::Window::WIDTH / 10).map { |x| x * 10}
+    y_values = (0...Config::Window::HEIGHT / 10).map { |x| x * 10}
     @candidate_coordinates = x_values.product(y_values).to_set
     spawn_fruit []
   end
