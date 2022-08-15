@@ -74,6 +74,7 @@ class SnekGame < Gosu::Window
       @player.handle_keypress id
     elsif @game_in_progress and id == Gosu::KB_P
       @paused = (not @paused)
+      @sound_manager.pause_toggled(@paused)
     end
   end
 end
