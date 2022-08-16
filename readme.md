@@ -1,5 +1,7 @@
 # Snake clone
 
+![Screenshot of the game](media/screenshot.png)
+
 ### Dependencies
 
 This project is built using [Gosu]() a ruby gem. Gosu is built on top of SDL2, a C library, so you will need this installed too. Please see [Gosu's wiki](https://github.com/gosu/gosu/wiki) for how to install Gosu's dependencies.
