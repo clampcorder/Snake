@@ -19,6 +19,7 @@ class SnekGame < Gosu::Window
     @overlay_ui = Banner.new('Press space to start')
     @fruit_manager = DummyElement.new
     @sound_manager = SoundManager.new
+    @input_buffer = Queue.new
   end
 
   def start_game
@@ -39,6 +40,7 @@ class SnekGame < Gosu::Window
   def update
     if @game_in_progress and not @paused
       6.times { |x| sleep 0.01 }
+      @player.handle_keypress @input_buffer.pop if not @input_buffer.empty?
 
       begin
         head_position = @player.movement_tick
@@ -71,7 +73,7 @@ class SnekGame < Gosu::Window
     elsif not @game_in_progress
       return
     elsif not @paused and @player.key_bindings.include? id
-      @player.handle_keypress id
+      @input_buffer << id
     elsif @game_in_progress and id == Gosu::KB_P
       @paused = (not @paused)
       @sound_manager.pause_toggled(@paused)
