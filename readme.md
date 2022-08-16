@@ -4,7 +4,7 @@
 
 ### Dependencies
 
-This project is built using [Gosu]() a ruby gem. Gosu is built on top of SDL2, a C library, so you will need this installed too. Please see [Gosu's wiki](https://github.com/gosu/gosu/wiki) for how to install Gosu's dependencies.
+This project is built using [Gosu](https://www.libgosu.org/ruby.html), available as a ruby gem. Gosu is built on top of SDL2, a C library, so you will need this installed too. Please see [Gosu's wiki](https://github.com/gosu/gosu/wiki) for how to install Gosu's dependencies.
 
 Please see the [Gemfile](Gemfile) for the gems this directly depends on.
 
