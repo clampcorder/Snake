@@ -23,6 +23,7 @@ class SnekPlayer
       Gosu::KB_RIGHT,
     ]
     @input_locked = false
+    @power_level = 1
   end
 
   def handle_keypress(id)
@@ -84,6 +85,7 @@ class SnekPlayer
     next_cell = last_cell.dup
     @visible_cells.append next_cell
     @occupied_coordinates.add [next_cell.x, next_cell.y]
+    @power_level = [@power_level + 2, 100].min
   end
 
   def draw
@@ -91,7 +93,7 @@ class SnekPlayer
     @visible_cells.each do |cell|
       cell.color = color
       color.hue = (color.hue + 5) % 360
-      cell.draw
+      cell.draw(@power_level)
     end
   end
 end
@@ -111,8 +113,9 @@ class Cell
     Cell.new(@x, @y, @color.dup)
   end
 
-  def draw
-    @image.draw(@x, @y, 0, 1, 1, @color)
+  def draw(power_level)
+    @color.saturation = power_level.fdiv(100)
+    @image.draw(@x, @y, 0, 2, 2, @color)
   end
 
   def advance_hue
