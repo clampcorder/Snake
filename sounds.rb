@@ -1,5 +1,6 @@
 require 'gosu'
 require './config'
+require './event_handler'
 
 class SoundManager
   def initialize
@@ -8,6 +9,8 @@ class SoundManager
     end.cycle
     @pausing = Gosu::Sample.new("media/double_up.wav")
     @unpausing = Gosu::Sample.new("media/double_down.wav")
+
+    EventHandler.register_listener(:fruit_eaten, self, :happy_beep)
   end
 
   def death_knell
@@ -20,7 +23,7 @@ class SoundManager
     beep.stop
   end
 
-  def happy_beep
+  def happy_beep(*)
     @beeps.next.play(Config::SOUND_VOLUME)
   end
 

@@ -1,3 +1,5 @@
+require './event_handler'
+
 class FruitManager
   attr_reader :fruit_coordinates
 
@@ -6,10 +8,12 @@ class FruitManager
     x_values = (0...Config::WINDOW_X / 10).map { |x| x * 10}
     y_values = (0...Config::WINDOW_Y / 10).map { |x| x * 10}
     @candidate_coordinates = x_values.product(y_values).to_set
-    spawn_fruit []
+    spawn_fruit({:occupied_coordinates => []})
+    EventHandler.register_listener(:fruit_eaten, self, :spawn_fruit)
   end
 
-  def spawn_fruit(occupied_coordinates)
+  def spawn_fruit(context)
+    occupied_coordinates = context[:occupied_coordinates]
     possible_coordinates = (@candidate_coordinates - occupied_coordinates.to_set).to_a
     @fruit_coordinates = *(possible_coordinates.sample)
 

@@ -2,6 +2,7 @@ require 'set'
 
 require './config'
 require './game_over'
+require './event_handler'
 
 class SnekPlayer
 
@@ -23,6 +24,7 @@ class SnekPlayer
       Gosu::KB_RIGHT,
     ]
     [Config::INITIAL_SIZE, 0].max.times { grow }
+    EventHandler.register_listener(:fruit_eaten, self, :grow)
   end
 
   def handle_keypress(id)
@@ -78,7 +80,7 @@ class SnekPlayer
     return [x, y]
   end
 
-  def grow
+  def grow(*)
     last_cell = @visible_cells.last
     next_cell = last_cell.dup
     @visible_cells.append next_cell

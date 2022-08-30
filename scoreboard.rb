@@ -1,4 +1,5 @@
 require 'sqlite3'
+require './event_handler'
 
 class Scoreboard
   def initialize
@@ -6,6 +7,8 @@ class Scoreboard
     @font = Gosu::Font.new(12)
     load_or_create_db
     @highscore = load_highscore_from_disk
+
+    EventHandler.register_listener(:fruit_eaten, self, :increment)
   end
 
   def load_or_create_db
@@ -32,8 +35,8 @@ class Scoreboard
     end
   end
 
-  def increment(value=1)
-    @score += value
+  def increment(context)
+    @score += context[:points]
     @highscore =[@score, @highscore].max
   end
 

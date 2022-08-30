@@ -50,10 +50,11 @@ class SnekGame < Gosu::Window
       end
 
       if head_position == @fruit_manager.fruit_coordinates
-        @player.grow
-        @fruit_manager.spawn_fruit(@player.occupied_coordinates)
-        @sound_manager.happy_beep
-        @scoreboard.increment
+        context = {
+          :points => 1,
+          :occupied_coordinates => @player.occupied_coordinates
+        }
+        EventHandler.publish_event(:fruit_eaten, context)
       end
 
     end
