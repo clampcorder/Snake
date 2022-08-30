@@ -36,17 +36,7 @@ class SnekGame < Gosu::Window
     if @game_in_progress and not @paused
       6.times { |x| sleep 0.01 }
       @player.handle_keypress @input_buffer.pop if not @input_buffer.empty?
-
-      head_position = @player.movement_tick
-
-      if head_position == @fruit_manager.fruit_coordinates
-        context = {
-          :points => 1,
-          :occupied_coordinates => @player.occupied_coordinates
-        }
-        EventHandler.publish_event(:fruit_eaten, context)
-      end
-
+      @player.movement_tick
     end
   end
 
@@ -59,7 +49,7 @@ class SnekGame < Gosu::Window
 
   def button_down(id)
     if not @game_in_progress and id == Gosu::KB_SPACE
-      EventHandler.publish_event(:game_start, {:occupied_coordinates => []})
+      EventHandler.publish_event(:game_start)
       return
     elsif not @game_in_progress
       return

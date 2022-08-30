@@ -4,8 +4,6 @@ require './config'
 require './event_handler'
 
 class SnekPlayer
-  attr_reader :occupied_coordinates
-
   def initialize(*)
     @facing = :right
     @last_calculated_facing = :right
@@ -65,7 +63,7 @@ class SnekPlayer
     tail = @visible_cells.last
     x, y = next_cell_position(head.x, head.y, @facing)
     if @occupied_coordinates.include? [x, y]
-      EventHandler.publish_event(:snake_died, {})
+      EventHandler.publish_event(:snake_died)
     end
 
     color = head.color.dup
@@ -73,7 +71,8 @@ class SnekPlayer
     @occupied_coordinates.add [x, y]
     @occupied_coordinates.delete [tail.x, tail.y]
 
-    return [x, y]
+    EventHandler.publish_event(:cell_entered, {:coordinates => [x, y]})
+    EventHandler.publish_event(:cell_exited,  {:coordinates => [tail.x, tail.y]})
   end
 
   def grow(*)
