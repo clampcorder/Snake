@@ -1,32 +1,28 @@
 require 'set'
 
 require './config'
-require './game_over'
+require './event_handler'
 
 class SnekPlayer
-
-  attr_reader :key_bindings
-  attr_reader :occupied_coordinates
-
-  def initialize
+  def initialize(*)
     @facing = :right
     @last_calculated_facing = :right
     @initial_color = Gosu::Color::AQUA.dup
+    EventHandler.register_listener(:fruit_eaten, self, :grow)
+    EventHandler.register_listener(:game_start, self, :reset)
+    # Required in initializer so that `draw` works on first draw
+    reset({})
+  end
 
+  def reset(context)
     @visible_cells = [Cell.new(Config::WINDOW_X / 2, Config::WINDOW_Y / 2, @initial_color)]
     @occupied_coordinates = Set.new
     @occupied_coordinates.add [@visible_cells[0].x, @visible_cells[0].y]
-    @key_bindings = [
-      Gosu::KB_UP,
-      Gosu::KB_DOWN,
-      Gosu::KB_LEFT,
-      Gosu::KB_RIGHT,
-    ]
     [Config::INITIAL_SIZE, 0].max.times { grow }
   end
 
   def handle_keypress(id)
-    # Change the facing riection of the head, do not allow going directly opposite
+    # Change the facing direction of the head, do not allow going directly opposite
     # current direction, or else player instantly dies.
     case id
     when Gosu::KB_UP
@@ -67,7 +63,7 @@ class SnekPlayer
     tail = @visible_cells.last
     x, y = next_cell_position(head.x, head.y, @facing)
     if @occupied_coordinates.include? [x, y]
-      raise GameOver
+      EventHandler.publish_event(:snake_died)
     end
 
     color = head.color.dup
@@ -75,10 +71,11 @@ class SnekPlayer
     @occupied_coordinates.add [x, y]
     @occupied_coordinates.delete [tail.x, tail.y]
 
-    return [x, y]
+    EventHandler.publish_event(:cell_entered, {:coordinates => [x, y]})
+    EventHandler.publish_event(:cell_exited,  {:coordinates => [tail.x, tail.y]})
   end
 
-  def grow
+  def grow(context)
     last_cell = @visible_cells.last
     next_cell = last_cell.dup
     @visible_cells.append next_cell

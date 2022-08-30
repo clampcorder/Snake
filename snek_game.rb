@@ -4,58 +4,48 @@ require './banner'
 require './config'
 require './dummy'
 require './fruit'
-require './game_over'
 require './scoreboard'
-require './snek_player.rb'
+require './snek_player'
 require './sounds'
 
 class SnekGame < Gosu::Window
   def initialize
     super(Config::WINDOW_X, Config::WINDOW_Y)
-    @game_in_progress = false
-    @paused = false
-    @player = DummyElement.new
+    @game_state = :stopped
+    @sound_manager = SoundManager.new
+    @player = SnekPlayer.new
     @scoreboard = Scoreboard.new
     @overlay_ui = Banner.new('Press space to start')
-    @fruit_manager = DummyElement.new
-    @sound_manager = SoundManager.new
-    @input_buffer = Queue.new
-  end
-
-  def start_game
-    @game_in_progress = true
-    @player = SnekPlayer.new
     @fruit_manager = FruitManager.new
-    @overlay_ui = DummyElement.new
-    @scoreboard.reset
-    return
+    @input_buffer = Queue.new
+    EventHandler.register_listener(:snake_died, self, :gameover)
+    EventHandler.register_listener(:game_start, self, :game_start)
+    EventHandler.register_listener(:game_paused, self, :game_paused)
+    EventHandler.register_listener(:game_unpaused, self, :game_unpaused)
   end
 
-  def game_over
-    @game_in_progress = false
-    @overlay_ui = Banner.new('Game Over', 'Press space to restart')
-    @scoreboard.save
+  def game_start(context)
+    @game_state = :playing
+  end
+
+  def game_paused(context)
+    @game_state = :paused
+  end
+
+  def game_unpaused(context)
+    @game_state = :unpaused
+  end
+
+  def gameover(context)
+    EventHandler.publish_event(:gameover, context)
+    @game_state = :stopped
   end
 
   def update
-    if @game_in_progress and not @paused
+    if @game_state == :playing
       6.times { |x| sleep 0.01 }
       @player.handle_keypress @input_buffer.pop if not @input_buffer.empty?
-
-      begin
-        head_position = @player.movement_tick
-      rescue
-        game_over
-        @sound_manager.death_knell
-      end
-
-      if head_position == @fruit_manager.fruit_coordinates
-        @player.grow
-        @fruit_manager.spawn_fruit(@player.occupied_coordinates)
-        @sound_manager.happy_beep
-        @scoreboard.increment
-      end
-
+      @player.movement_tick
     end
   end
 
@@ -67,16 +57,14 @@ class SnekGame < Gosu::Window
   end
 
   def button_down(id)
-    if not @game_in_progress and id == Gosu::KB_SPACE
-      start_game
-      return
-    elsif not @game_in_progress
-      return
-    elsif not @paused and @player.key_bindings.include? id
+    if @game_state == :stopped and id == Gosu::KB_SPACE
+      EventHandler.publish_event(:game_start)
+    elsif @game_state == :playing and id == Gosu::KB_SPACE
+      EventHandler.publish_event(:paused)
+    elsif @game_state == :paused and id == Gosu::KB_SPACE
+      EventHandler.publish_event(:unpaused)
+    elsif @game_state == :playing and Config::KEY_BINDINGS.include? id
       @input_buffer << id
-    elsif @game_in_progress and id == Gosu::KB_P
-      @paused = (not @paused)
-      @sound_manager.pause_toggled(@paused)
     end
   end
 end
