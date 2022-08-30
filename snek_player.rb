@@ -22,7 +22,7 @@ class SnekPlayer
       Gosu::KB_LEFT,
       Gosu::KB_RIGHT,
     ]
-    @input_locked = false
+    [Config::INITIAL_SIZE, 0].max.times { grow }
   end
 
   def handle_keypress(id)
@@ -75,7 +75,6 @@ class SnekPlayer
     @occupied_coordinates.add [x, y]
     @occupied_coordinates.delete [tail.x, tail.y]
 
-    @input_locked = false
     return [x, y]
   end
 
