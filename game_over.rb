@@ -1,2 +1,0 @@
-class GameOver < StandardError
-end

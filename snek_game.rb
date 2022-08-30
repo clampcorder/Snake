@@ -4,7 +4,6 @@ require './banner'
 require './config'
 require './dummy'
 require './fruit'
-require './game_over'
 require './scoreboard'
 require './snek_player.rb'
 require './sounds'
@@ -14,12 +13,13 @@ class SnekGame < Gosu::Window
     super(Config::WINDOW_X, Config::WINDOW_Y)
     @game_in_progress = false
     @paused = false
+    @sound_manager = SoundManager.new
     @player = DummyElement.new
     @scoreboard = Scoreboard.new
     @overlay_ui = Banner.new('Press space to start')
     @fruit_manager = DummyElement.new
-    @sound_manager = SoundManager.new
     @input_buffer = Queue.new
+    EventHandler.register_listener(:gameover, self, :gameover)
   end
 
   def start_game
@@ -31,10 +31,9 @@ class SnekGame < Gosu::Window
     return
   end
 
-  def game_over
+  def gameover(context)
     @game_in_progress = false
     @overlay_ui = Banner.new('Game Over', 'Press space to restart')
-    @scoreboard.save
   end
 
   def update
@@ -42,12 +41,7 @@ class SnekGame < Gosu::Window
       6.times { |x| sleep 0.01 }
       @player.handle_keypress @input_buffer.pop if not @input_buffer.empty?
 
-      begin
-        head_position = @player.movement_tick
-      rescue
-        game_over
-        @sound_manager.death_knell
-      end
+      head_position = @player.movement_tick
 
       if head_position == @fruit_manager.fruit_coordinates
         context = {

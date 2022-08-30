@@ -9,6 +9,7 @@ class Scoreboard
     @highscore = load_highscore_from_disk
 
     EventHandler.register_listener(:fruit_eaten, self, :increment)
+    EventHandler.register_listener(:gameover, self, :save)
   end
 
   def load_or_create_db
@@ -29,7 +30,7 @@ class Scoreboard
     @score = 0
   end
 
-  def save
+  def save(context)
     if @score == @highscore
       @db.execute "INSERT INTO scores VALUES (NULL, ?);", "#{@highscore}"
     end

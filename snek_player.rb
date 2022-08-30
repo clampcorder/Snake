@@ -1,7 +1,6 @@
 require 'set'
 
 require './config'
-require './game_over'
 require './event_handler'
 
 class SnekPlayer
@@ -28,7 +27,7 @@ class SnekPlayer
   end
 
   def handle_keypress(id)
-    # Change the facing riection of the head, do not allow going directly opposite
+    # Change the facing direction of the head, do not allow going directly opposite
     # current direction, or else player instantly dies.
     case id
     when Gosu::KB_UP
@@ -69,7 +68,7 @@ class SnekPlayer
     tail = @visible_cells.last
     x, y = next_cell_position(head.x, head.y, @facing)
     if @occupied_coordinates.include? [x, y]
-      raise GameOver
+      EventHandler.publish_event(:gameover, {})
     end
 
     color = head.color.dup
