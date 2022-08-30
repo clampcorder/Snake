@@ -9,6 +9,8 @@ class Banner
     @subheading_font = Gosu::Font.new(12)
     EventHandler.register_listener(:game_start, self, :clear)
     EventHandler.register_listener(:gameover, self, :gameover)
+    EventHandler.register_listener(:paused, self, :pause)
+    EventHandler.register_listener(:unpaused, self, :clear)
   end
 
   def clear(context)
@@ -19,6 +21,11 @@ class Banner
   def gameover(context)
     @heading = "Game Over"
     @subheading = "Press space to restart"
+  end
+
+  def pause(context)
+    @heading = "Paused"
+    @subheading = "Press space to continue"
   end
 
   def draw

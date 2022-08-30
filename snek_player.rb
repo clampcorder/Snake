@@ -75,7 +75,7 @@ class SnekPlayer
     EventHandler.publish_event(:cell_exited,  {:coordinates => [tail.x, tail.y]})
   end
 
-  def grow(*)
+  def grow(context)
     last_cell = @visible_cells.last
     next_cell = last_cell.dup
     @visible_cells.append next_cell

@@ -5,14 +5,13 @@ require './config'
 require './dummy'
 require './fruit'
 require './scoreboard'
-require './snek_player.rb'
+require './snek_player'
 require './sounds'
 
 class SnekGame < Gosu::Window
   def initialize
     super(Config::WINDOW_X, Config::WINDOW_Y)
-    @game_in_progress = false
-    @paused = false
+    @game_state = :stopped
     @sound_manager = SoundManager.new
     @player = SnekPlayer.new
     @scoreboard = Scoreboard.new
@@ -20,20 +19,30 @@ class SnekGame < Gosu::Window
     @fruit_manager = FruitManager.new
     @input_buffer = Queue.new
     EventHandler.register_listener(:snake_died, self, :gameover)
-    EventHandler.register_listener(:game_start, self, :start_game)
+    EventHandler.register_listener(:game_start, self, :game_start)
+    EventHandler.register_listener(:game_paused, self, :game_paused)
+    EventHandler.register_listener(:game_unpaused, self, :game_unpaused)
   end
 
-  def start_game(context)
-    @game_in_progress = true
+  def game_start(context)
+    @game_state = :playing
+  end
+
+  def game_paused(context)
+    @game_state = :paused
+  end
+
+  def game_unpaused(context)
+    @game_state = :unpaused
   end
 
   def gameover(context)
     EventHandler.publish_event(:gameover, context)
-    @game_in_progress = false
+    @game_state = :stopped
   end
 
   def update
-    if @game_in_progress and not @paused
+    if @game_state == :playing
       6.times { |x| sleep 0.01 }
       @player.handle_keypress @input_buffer.pop if not @input_buffer.empty?
       @player.movement_tick
@@ -48,16 +57,14 @@ class SnekGame < Gosu::Window
   end
 
   def button_down(id)
-    if not @game_in_progress and id == Gosu::KB_SPACE
+    if @game_state == :stopped and id == Gosu::KB_SPACE
       EventHandler.publish_event(:game_start)
-      return
-    elsif not @game_in_progress
-      return
-    elsif not @paused and Config::KEY_BINDINGS.include? id
+    elsif @game_state == :playing and id == Gosu::KB_SPACE
+      EventHandler.publish_event(:paused)
+    elsif @game_state == :paused and id == Gosu::KB_SPACE
+      EventHandler.publish_event(:unpaused)
+    elsif @game_state == :playing and Config::KEY_BINDINGS.include? id
       @input_buffer << id
-    elsif @game_in_progress and id == Gosu::KB_P
-      @paused = (not @paused)
-      @sound_manager.pause_toggled(@paused)
     end
   end
 end
