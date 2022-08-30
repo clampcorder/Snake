@@ -14,26 +14,22 @@ class SnekGame < Gosu::Window
     @game_in_progress = false
     @paused = false
     @sound_manager = SoundManager.new
-    @player = DummyElement.new
+    @player = SnekPlayer.new
     @scoreboard = Scoreboard.new
     @overlay_ui = Banner.new('Press space to start')
-    @fruit_manager = DummyElement.new
+    @fruit_manager = FruitManager.new
     @input_buffer = Queue.new
-    EventHandler.register_listener(:gameover, self, :gameover)
+    EventHandler.register_listener(:snake_died, self, :gameover)
+    EventHandler.register_listener(:game_start, self, :start_game)
   end
 
-  def start_game
+  def start_game(context)
     @game_in_progress = true
-    @player = SnekPlayer.new
-    @fruit_manager = FruitManager.new
-    @overlay_ui = DummyElement.new
-    @scoreboard.reset
-    return
   end
 
   def gameover(context)
+    EventHandler.publish_event(:gameover, context)
     @game_in_progress = false
-    @overlay_ui = Banner.new('Game Over', 'Press space to restart')
   end
 
   def update
@@ -63,11 +59,11 @@ class SnekGame < Gosu::Window
 
   def button_down(id)
     if not @game_in_progress and id == Gosu::KB_SPACE
-      start_game
+      EventHandler.publish_event(:game_start, {:occupied_coordinates => []})
       return
     elsif not @game_in_progress
       return
-    elsif not @paused and @player.key_bindings.include? id
+    elsif not @paused and Config::KEY_BINDINGS.include? id
       @input_buffer << id
     elsif @game_in_progress and id == Gosu::KB_P
       @paused = (not @paused)

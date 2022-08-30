@@ -1,4 +1,5 @@
 require 'gosu'
+require './event_handler'
 
 class Banner
   def initialize(heading, subheading='')
@@ -6,6 +7,18 @@ class Banner
     @subheading = subheading
     @heading_font = Gosu::Font.new(20)
     @subheading_font = Gosu::Font.new(12)
+    EventHandler.register_listener(:game_start, self, :clear)
+    EventHandler.register_listener(:gameover, self, :gameover)
+  end
+
+  def clear(context)
+    @heading = ""
+    @subheading = ""
+  end
+
+  def gameover(context)
+    @heading = "Game Over"
+    @subheading = "Press space to restart"
   end
 
   def draw
@@ -31,6 +44,5 @@ class Banner
       0.5,
       0.5,
     )
-
   end
 end

@@ -10,6 +10,7 @@ class Scoreboard
 
     EventHandler.register_listener(:fruit_eaten, self, :increment)
     EventHandler.register_listener(:gameover, self, :save)
+    EventHandler.register_listener(:game_start, self, :reset)
   end
 
   def load_or_create_db
@@ -26,7 +27,7 @@ class Scoreboard
     @highscore = @db.get_first_value "SELECT score from scores ORDER BY score DESC LIMIT 1"
   end
 
-  def reset
+  def reset(context)
     @score = 0
   end
 

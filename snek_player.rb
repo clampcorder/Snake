@@ -4,26 +4,23 @@ require './config'
 require './event_handler'
 
 class SnekPlayer
-
-  attr_reader :key_bindings
   attr_reader :occupied_coordinates
 
-  def initialize
+  def initialize(*)
     @facing = :right
     @last_calculated_facing = :right
     @initial_color = Gosu::Color::AQUA.dup
+    EventHandler.register_listener(:fruit_eaten, self, :grow)
+    EventHandler.register_listener(:game_start, self, :reset)
+    # Required in initializer so that `draw` works on first draw
+    reset({})
+  end
 
+  def reset(context)
     @visible_cells = [Cell.new(Config::WINDOW_X / 2, Config::WINDOW_Y / 2, @initial_color)]
     @occupied_coordinates = Set.new
     @occupied_coordinates.add [@visible_cells[0].x, @visible_cells[0].y]
-    @key_bindings = [
-      Gosu::KB_UP,
-      Gosu::KB_DOWN,
-      Gosu::KB_LEFT,
-      Gosu::KB_RIGHT,
-    ]
     [Config::INITIAL_SIZE, 0].max.times { grow }
-    EventHandler.register_listener(:fruit_eaten, self, :grow)
   end
 
   def handle_keypress(id)
@@ -68,7 +65,7 @@ class SnekPlayer
     tail = @visible_cells.last
     x, y = next_cell_position(head.x, head.y, @facing)
     if @occupied_coordinates.include? [x, y]
-      EventHandler.publish_event(:gameover, {})
+      EventHandler.publish_event(:snake_died, {})
     end
 
     color = head.color.dup
