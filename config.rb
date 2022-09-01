@@ -1,9 +1,11 @@
 require 'gosu'
 
 module Config
-  WINDOW_X = 400
-  WINDOW_Y = 300
-
+  CELL_SIZE = 16
+  CELLS_WIDTH = 20
+  CELLS_HEIGHT = 20
+  OFFSET_X = 64
+  OFFSET_Y = 32
   INITIAL_SIZE = 2
 
   SOUND_VOLUME = 0.25
@@ -14,4 +16,11 @@ module Config
     Gosu::KB_LEFT,
     Gosu::KB_RIGHT,
   ]
+
+  # Derived values
+  CELL_SCALE = CELL_SIZE.fdiv 10
+  TEMPORAL_SCALE = (CELL_SCALE + 2).fdiv 3
+  WINDOW_X = (CELL_SIZE * CELLS_WIDTH) + 2 * OFFSET_X
+  WINDOW_Y = (CELL_SIZE * CELLS_HEIGHT) + 2 * OFFSET_Y
+
 end

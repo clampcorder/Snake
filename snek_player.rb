@@ -15,10 +15,15 @@ class SnekPlayer
   end
 
   def reset(context)
-    @visible_cells = [Cell.new(Config::WINDOW_X / 2, Config::WINDOW_Y / 2, @initial_color)]
+    @visible_cells = [
+      Cell.new(
+        Config::CELL_SIZE * Config::CELLS_WIDTH / 2,
+        Config::CELL_SIZE * Config::CELLS_HEIGHT / 2,
+        @initial_color)
+    ]
     @occupied_coordinates = Set.new
     @occupied_coordinates.add [@visible_cells[0].x, @visible_cells[0].y]
-    [Config::INITIAL_SIZE, 0].max.times { grow }
+    [Config::INITIAL_SIZE, 0].max.times { grow({}) }
   end
 
   def handle_keypress(id)
@@ -42,18 +47,18 @@ class SnekPlayer
   def next_cell_position(x, y, facing)
     case facing
     when :up
-      y -= 10
+      y -= Config::CELL_SIZE
     when :down
-      y += 10
+      y += Config::CELL_SIZE
     when :left
-      x -= 10
+      x -= Config::CELL_SIZE
     when :right
-      x += 10
+      x += Config::CELL_SIZE
     else
       
     end
-    x %= Config::WINDOW_X
-    y %= Config::WINDOW_Y
+    x %= Config::CELL_SIZE * Config::CELLS_WIDTH
+    y %= Config::CELL_SIZE * Config::CELLS_HEIGHT
     return x, y
   end
 
@@ -108,7 +113,14 @@ class Cell
   end
 
   def draw
-    @image.draw(@x, @y, 0, 1, 1, @color)
+    x = @x + Config::OFFSET_X
+    y = @y + Config::OFFSET_Y
+    @image.draw(
+      x, y,
+      1,
+      Config::CELL_SCALE, Config::CELL_SCALE,
+      @color
+    )
   end
 
   def advance_hue

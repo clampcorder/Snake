@@ -1,5 +1,6 @@
 require 'gosu'
 
+require './background'
 require './banner'
 require './config'
 require './dummy'
@@ -17,6 +18,7 @@ class SnekGame < Gosu::Window
     @scoreboard = Scoreboard.new
     @overlay_ui = Banner.new('Press space to start')
     @fruit_manager = FruitManager.new
+    @background = Background.new
     @input_buffer = Queue.new
     EventHandler.register_listener(:snake_died, self, :gameover)
     EventHandler.register_listener(:game_start, self, :game_start)
@@ -43,13 +45,14 @@ class SnekGame < Gosu::Window
 
   def update
     if @game_state == :playing
-      6.times { |x| sleep 0.01 }
+      6.times { |x| sleep(0.01 * Config::TEMPORAL_SCALE) }
       @player.handle_keypress @input_buffer.pop if not @input_buffer.empty?
       @player.movement_tick
     end
   end
 
   def draw
+    @background.draw
     @player.draw
     @fruit_manager.draw
     @scoreboard.draw

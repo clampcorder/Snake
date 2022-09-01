@@ -6,11 +6,11 @@ class FruitManager
   def initialize
     @image = Gosu::Image.new("media/cell.bmp")
     @color = random_color
-    x_values = (0...Config::WINDOW_X / 10).map { |x| x * 10}
-    y_values = (0...Config::WINDOW_Y / 10).map { |x| x * 10}
+    x_values = (0...Config::CELLS_WIDTH).map { |x| x * Config::CELL_SIZE}
+    y_values = (0...Config::CELLS_HEIGHT).map { |x| x * Config::CELL_SIZE}
     @candidate_coordinates = x_values.product(y_values).to_set
     @occupied_coordinates = Set.new
-    @fruit_coordinates = [-10, -10]
+    @fruit_coordinates = [-1000, -1000]
     EventHandler.register_listener(:fruit_eaten,  self, :spawn_fruit)
     EventHandler.register_listener(:game_start,   self, :spawn_fruit)
     EventHandler.register_listener(:cell_entered, self, :cell_entered)
@@ -48,6 +48,8 @@ class FruitManager
 
   def draw
     x, y = *@fruit_coordinates
-    @image.draw(x, y, 0, 1, 1, @color)
+    x = x + Config::OFFSET_X
+    y = y + Config::OFFSET_Y
+    @image.draw(x, y, 1, Config::CELL_SCALE, Config::CELL_SCALE, @color)
   end
 end

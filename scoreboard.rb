@@ -4,7 +4,7 @@ require './event_handler'
 class Scoreboard
   def initialize
     @score = 0
-    @font = Gosu::Font.new(12)
+    @font = Gosu::Font.new(16)
     load_or_create_db
     @highscore = load_highscore_from_disk
 
