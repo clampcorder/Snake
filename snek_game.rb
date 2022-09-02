@@ -35,7 +35,7 @@ class SnekGame < Gosu::Window
   end
 
   def game_unpaused(context)
-    @game_state = :unpaused
+    @game_state = :playing
   end
 
   def gameover(context)
@@ -63,9 +63,9 @@ class SnekGame < Gosu::Window
     if @game_state == :stopped and id == Gosu::KB_SPACE
       EventHandler.publish_event(:game_start)
     elsif @game_state == :playing and id == Gosu::KB_SPACE
-      EventHandler.publish_event(:paused)
+      EventHandler.publish_event(:game_paused)
     elsif @game_state == :paused and id == Gosu::KB_SPACE
-      EventHandler.publish_event(:unpaused)
+      EventHandler.publish_event(:game_unpaused)
     elsif @game_state == :playing and Config::KEY_BINDINGS.include? id
       @input_buffer << id
     end

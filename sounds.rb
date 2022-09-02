@@ -12,8 +12,8 @@ class SoundManager
 
     EventHandler.register_listener(:fruit_eaten, self, :happy_beep)
     EventHandler.register_listener(:gameover, self, :death_knell)
-    EventHandler.register_listener(:paused, self, :pause)
-    EventHandler.register_listener(:unpaused, self, :unpause)
+    EventHandler.register_listener(:game_paused, self, :pause)
+    EventHandler.register_listener(:game_unpaused, self, :unpause)
   end
 
   def death_knell(context)
