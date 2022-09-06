@@ -13,7 +13,7 @@ class SnekGame < Gosu::Window
     super(Config::WINDOW_X, Config::WINDOW_Y)
     @game_state = :stopped
     @sound_manager = SoundManager.new
-    @player = SnekPlayer.new
+    @players = [SnekPlayer.new(true), SnekPlayer.new(false)]
     @scoreboard = Scoreboard.new
     @overlay_ui = Banner.new('Press space to start')
     @fruit_manager = FruitManager.new
@@ -45,14 +45,18 @@ class SnekGame < Gosu::Window
   def update
     if @game_state == :playing
       6.times { |x| sleep(0.01 * Config::TEMPORAL_SCALE) }
-      @player.handle_keypress @input_buffer.pop if not @input_buffer.empty?
-      @player.movement_tick
+      next_key = @input_buffer.pop if not @input_buffer.empty?
+      @players[0].handle_keypress next_key
+      @players[0].movement_tick
+      @players[1].handle_keypress next_key
+      @players[1].movement_tick
     end
   end
 
   def draw
     @background.draw
-    @player.draw
+    @players[0].draw
+    @players[1].draw
     @fruit_manager.draw
     @scoreboard.draw
     @overlay_ui.draw
@@ -65,7 +69,9 @@ class SnekGame < Gosu::Window
       EventHandler.publish_event(:game_paused)
     elsif @game_state == :paused and id == Gosu::KB_SPACE
       EventHandler.publish_event(:game_unpaused)
-    elsif @game_state == :playing and Config::KEY_BINDINGS.include? id
+    elsif @game_state == :playing and Config::ALL_BOUND_KEYS.include? id
+      # bit odd to share the same buffer for both snakes... but this should actually work
+      # cause each snake will only react to its bound keys, so just send to both
       @input_buffer << id
     end
   end
