@@ -11,17 +11,24 @@ module Config
 
   SOUND_VOLUME = 0.25
 
-  KEY_BINDINGS = [
-    Gosu::KB_UP,
-    Gosu::KB_DOWN,
-    Gosu::KB_LEFT,
-    Gosu::KB_RIGHT,
-  ]
+  PLAYER_1_BINDINGS = {
+    :up => Gosu::KB_UP,
+    :down => Gosu::KB_DOWN,
+    :left => Gosu::KB_LEFT,
+    :right => Gosu::KB_RIGHT,
+  }
+
+  PLAYER_2_BINDINGS = {
+    :up => Gosu::KB_W,
+    :down => Gosu::KB_S,
+    :left => Gosu::KB_A,
+    :right => Gosu::KB_D,
+  }
 
   # Derived values
   CELL_SCALE = CELL_SIZE.fdiv 10
   TEMPORAL_SCALE = (CELL_SCALE + 2).fdiv 3
   WINDOW_X = (CELL_SIZE * CELLS_WIDTH) + 2 * OFFSET_X
   WINDOW_Y = (CELL_SIZE * CELLS_HEIGHT) + 2 * OFFSET_Y
-
+  ALL_BOUND_KEYS = PLAYER_1_BINDINGS.values + PLAYER_2_BINDINGS.values
 end

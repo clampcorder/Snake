@@ -4,12 +4,15 @@ require './config'
 require './event_handler'
 
 class SnekPlayer
-  def initialize(*)
-    @facing = :right
-    @last_calculated_facing = :right
-    @initial_color = Gosu::Color::AQUA.dup
+  def initialize(is_player_1)
+    @facing = is_player_1 ? :right : :left
+    @last_calculated_facing = is_player_1 ? :right : :left
+    @bindings = is_player_1 ? Config::PLAYER_1_BINDINGS : Config::PLAYER_2_BINDINGS
+    @initial_color = is_player_1 ? Gosu::Color::AQUA.dup : Gosu::Color::RED.dup
+
     EventHandler.register_listener(:fruit_eaten, self, :grow)
     EventHandler.register_listener(:game_start, self, :reset)
+
     # Required in initializer so that `draw` works on first draw
     reset({})
   end
@@ -29,14 +32,16 @@ class SnekPlayer
   def handle_keypress(id)
     # Change the facing direction of the head, do not allow going directly opposite
     # current direction, or else player instantly dies.
+    return if id == nil
+
     case id
-    when Gosu::KB_UP
+    when @bindings[:up]
       @facing = :up unless @last_calculated_facing == :down
-    when Gosu::KB_DOWN
+    when @bindings[:down]
       @facing = :down unless @last_calculated_facing == :up
-    when Gosu::KB_LEFT
+    when @bindings[:left]
       @facing = :left unless @last_calculated_facing == :right
-    when Gosu::KB_RIGHT
+    when @bindings[:right]
       @facing = :right unless @last_calculated_facing == :left
     else
 
