@@ -13,7 +13,7 @@ class SnekGame < Gosu::Window
     super(Config::WINDOW_X, Config::WINDOW_Y)
     @game_state = :stopped
     @sound_manager = SoundManager.new
-    @players = [SnekPlayer.new(true), SnekPlayer.new(false)]
+    @players = [SnekPlayer.new(1), SnekPlayer.new(2)]
     @scoreboard = Scoreboard.new
     @overlay_ui = Banner.new('Press space to start')
     @fruit_manager = FruitManager.new

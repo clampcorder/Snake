@@ -4,7 +4,9 @@ require './config'
 require './event_handler'
 
 class SnekPlayer
-  def initialize(is_player_1)
+  def initialize(player_number)
+    is_player_1 = player_number == 1
+    @player_number = player_number
     @facing = is_player_1 ? :right : :left
     @last_calculated_facing = is_player_1 ? :right : :left
     @bindings = is_player_1 ? Config::PLAYER_1_BINDINGS : Config::PLAYER_2_BINDINGS
@@ -15,6 +17,10 @@ class SnekPlayer
 
     # Required in initializer so that `draw` works on first draw
     reset({})
+  end
+
+  def is_player_1?
+    return @player_number == 1
   end
 
   def reset(context)
@@ -73,7 +79,7 @@ class SnekPlayer
     tail = @visible_cells.last
     x, y = next_cell_position(head.x, head.y, @facing)
     if @occupied_coordinates.include? [x, y]
-      EventHandler.publish_event(:snake_died)
+      EventHandler.publish_event(:snake_died, {:player => @player_number})
     end
 
     color = head.color.dup
@@ -81,11 +87,19 @@ class SnekPlayer
     @occupied_coordinates.add [x, y]
     @occupied_coordinates.delete [tail.x, tail.y]
 
-    EventHandler.publish_event(:cell_entered, {:coordinates => [x, y]})
-    EventHandler.publish_event(:cell_exited,  {:coordinates => [tail.x, tail.y]})
+    EventHandler.publish_event(
+      :cell_entered,
+      {:coordinates => [x, y], :player => @player_number}
+    )
+    EventHandler.publish_event(
+      :cell_exited,
+      {:coordinates => [tail.x, tail.y], :player => @player_number}
+    )
   end
 
   def grow(context)
+    return unless context[:player] == @player_number
+
     last_cell = @visible_cells.last
     next_cell = last_cell.dup
     @visible_cells.append next_cell
