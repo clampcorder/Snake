@@ -20,7 +20,10 @@ class FruitManager
 
   def check_fruit_eaten(context)
     if context[:coordinates] == @fruit_coordinates then
-      EventHandler.publish_event(:fruit_eaten, {:points => 1})
+      EventHandler.publish_event(
+        :fruit_eaten,
+        {:points => 1, :player => context[:player]}
+      )
     end
   end
 
