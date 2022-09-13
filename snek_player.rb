@@ -2,9 +2,11 @@ require 'set'
 
 require './config'
 require './event_handler'
+require './free_space_tracker'
 
-class SnekPlayer
+class SnekPlayer < FreeSpaceTracker
   def initialize(player_number)
+    super()
     is_player_1 = player_number == 1
     @player_number = player_number
     @facing = is_player_1 ? :right : :left
@@ -30,8 +32,6 @@ class SnekPlayer
         Config::CELL_SIZE * Config::CELLS_HEIGHT / 2,
         @initial_color)
     ]
-    @occupied_coordinates = Set.new
-    @occupied_coordinates.add [@visible_cells[0].x, @visible_cells[0].y]
     [Config::INITIAL_SIZE, 0].max.times { grow({}) }
   end
 
@@ -84,9 +84,8 @@ class SnekPlayer
 
     color = head.color.dup
     @visible_cells = [Cell.new(x, y, color)] + @visible_cells[0..-2]
-    @occupied_coordinates.add [x, y]
-    @occupied_coordinates.delete [tail.x, tail.y]
 
+    # These events will be detected by the self snake too
     EventHandler.publish_event(
       :cell_entered,
       {:coordinates => [x, y], :player => @player_number}
@@ -103,7 +102,6 @@ class SnekPlayer
     last_cell = @visible_cells.last
     next_cell = last_cell.dup
     @visible_cells.append next_cell
-    @occupied_coordinates.add [next_cell.x, next_cell.y]
   end
 
   def draw

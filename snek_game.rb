@@ -10,7 +10,7 @@ require './sounds'
 
 class SnekGame < Gosu::Window
   def initialize
-    super(Config::WINDOW_X, Config::WINDOW_Y)
+    super(Config::WINDOW_X, Config::WINDOW_Y, true)
     @game_state = :stopped
     @sound_manager = SoundManager.new
     @players = [SnekPlayer.new(1), SnekPlayer.new(2)]
