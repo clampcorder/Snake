@@ -110,7 +110,7 @@ class SnekPlayer
     color = @initial_color.dup
     @visible_cells.each do |cell|
       cell.color = color
-      color.hue = (color.hue + 5) % 360
+      color.hue = (color.hue + 10) % 360
       cell.draw
     end
   end
@@ -143,6 +143,6 @@ class Cell
   end
 
   def advance_hue
-    @color.hue = (@color.hue + 5) % 360
+    @color.hue = (@color.hue + 10) % 360
   end
 end
