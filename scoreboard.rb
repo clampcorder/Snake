@@ -2,8 +2,11 @@ require 'sqlite3'
 require './event_handler'
 
 class Scoreboard
+  @@initial_scores = Hash.new { |hash, k| hash[k] = 0 }
+
   def initialize
-    @scores = {1 => 0, 2 => 0}
+    @scores = @@initial_scores.clone
+    # @scores = {1 => 0, 2 => 0}
     @font = Gosu::Font.new(16)
     # load_or_create_db
     # @highscore = load_highscore_from_disk
@@ -28,7 +31,7 @@ class Scoreboard
   end
 
   def reset(context)
-    @scores = {1=> 0, 2=> 2}
+    @scores = @@initial_scores.clone
   end
 
   def save(context)
