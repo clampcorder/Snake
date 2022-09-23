@@ -4,5 +4,5 @@ module Config
 
   SOUND_VOLUME = 0.25
 
-  MICE_PROBABILITY = 0.10
+  MICE_PROBABILITY = 0.50
 end

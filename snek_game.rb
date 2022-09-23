@@ -12,7 +12,7 @@ require './sounds'
 
 class SnekGame < Gosu::Window
   def initialize
-    super(Config::WINDOW_X, Config::WINDOW_Y)
+    super(Config::WINDOW_X, Config::WINDOW_Y, true)
     @game_in_progress = false
     @paused = false
     @player = DummyElement.new
