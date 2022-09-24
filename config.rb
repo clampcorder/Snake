@@ -7,6 +7,7 @@ module Config
   OFFSET_X = 64
   OFFSET_Y = 32
   INITIAL_SIZE = 2
+  FULLSCREEN = true
 
   SOUND_VOLUME = 0.25
 
