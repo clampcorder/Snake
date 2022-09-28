@@ -18,6 +18,15 @@ module Config
     Gosu::KB_RIGHT,
   ]
 
+  # Speeds are represented as delays between frames in milliseconds.
+  # beyond the window's update interval
+  SPEEDS = {
+    :slow => 50,
+    :medium => 35,
+    :fast => 25,
+    :ludicrous => 15,
+  }
+
   # Derived values
   CELL_SCALE = CELL_SIZE.fdiv 10
   TEMPORAL_SCALE = (CELL_SCALE + 2).fdiv 3

@@ -10,7 +10,7 @@ require './sounds'
 
 class SnekGame < Gosu::Window
   def initialize
-    super(Config::WINDOW_X, Config::WINDOW_Y, Config::FULLSCREEN)
+    super(Config::WINDOW_X, Config::WINDOW_Y, Config::FULLSCREEN, 10)
     @game_state = :stopped
     @sound_manager = SoundManager.new
     @player = SnekPlayer.new
@@ -19,6 +19,7 @@ class SnekGame < Gosu::Window
     @fruit_manager = FruitManager.new
     @background = Background.new
     @input_buffer = Queue.new
+    @speed = :slow
     EventHandler.register_listener(:snake_died, self, :gameover)
     EventHandler.register_listener(:game_start, self, :game_start)
     EventHandler.register_listener(:game_paused, self, :game_paused)
@@ -44,7 +45,7 @@ class SnekGame < Gosu::Window
 
   def update
     if @game_state == :playing
-      6.times { |x| sleep(0.01 * Config::TEMPORAL_SCALE) }
+      Config::SPEEDS[@speed].times { |x| sleep(0.001 * Config::TEMPORAL_SCALE) }
       @player.handle_keypress @input_buffer.pop if not @input_buffer.empty?
       @player.movement_tick
     end
@@ -67,6 +68,14 @@ class SnekGame < Gosu::Window
       EventHandler.publish_event(:game_unpaused)
     elsif @game_state == :playing and Config::KEY_BINDINGS.include? id
       @input_buffer << id
+    elsif id == Gosu::KB_1
+      @speed = :slow
+    elsif id == Gosu::KB_2
+      @speed = :medium
+    elsif id == Gosu::KB_3
+      @speed = :fast
+    elsif id == Gosu::KB_4
+      @speed = :ludicrous
     end
   end
 end
